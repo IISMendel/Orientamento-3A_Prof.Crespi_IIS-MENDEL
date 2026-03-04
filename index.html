@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orientamento Digitale | IIS Mendel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -11,12 +14,12 @@
             theme: {
                 extend: {
                     colors: {
-                        'agri-light': '#f5f5f0', // Warm neutral background
-                        'agri-dark': '#2c3e2d', // Deep green text/headings
-                        'agri-green': '#4a7c59', // Primary accent (nature)
-                        'agri-earth': '#8b5a2b', // Secondary accent (soil/earth)
-                        'agri-sun': '#e9c46a',   // Highlight
-                        'agri-blue': '#3b82f6'   // Digital accent
+                        'agri-light': '#f5f5f0',
+                        'agri-dark': '#2c3e2d',
+                        'agri-green': '#4a7c59',
+                        'agri-earth': '#8b5a2b',
+                        'agri-sun': '#e9c46a',
+                        'agri-blue': '#3b82f6'
                     },
                     fontFamily: {
                         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -27,38 +30,245 @@
         }
     </script>
     <style>
+        /* ── ORIGINAL STYLES (invariati) ── */
         .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 45vh;
-            max-height: 400px;
-            min-height: 250px;
+            position: relative; width: 100%; max-width: 800px;
+            margin-left: auto; margin-right: auto;
+            height: 45vh; max-height: 400px; min-height: 250px;
         }
-        @media (max-width: 640px) {
-            .chart-container { height: 35vh; }
-        }
+        @media (max-width: 640px) { .chart-container { height: 35vh; } }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f5f5f0; }
         ::-webkit-scrollbar-thumb { background: #4a7c59; border-radius: 4px; }
-        
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.4s ease-in-out; }
         .tab-btn.active { border-bottom: 4px solid #4a7c59; color: #2c3e2d; font-weight: bold; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.4s ease-in-out; }
         .perspective { perspective: 1000px; }
+
+        /* ── READING PROGRESS BAR ── */
+        #progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(90deg, #4a7c59, #e9c46a, #8b5a2b);
+            width: 0%; z-index: 9999; transition: width 0.08s linear;
+        }
+
+        /* ── FLOATING LEAVES (hero) ── */
+        .leaf {
+            position: absolute; opacity: 0;
+            animation: floatLeaf linear infinite;
+            user-select: none; pointer-events: none; z-index: 1;
+        }
+        @keyframes floatLeaf {
+            0%   { transform: translateY(80px) rotate(0deg) scale(1); opacity: 0; }
+            10%  { opacity: 0.55; }
+            85%  { opacity: 0.3; }
+            100% { transform: translateY(-560px) rotate(400deg) scale(0.8); opacity: 0; }
+        }
+
+        /* ── HERO BACKGROUND BLOBS ── */
+        .hero-blob {
+            position: absolute; border-radius: 50%;
+            filter: blur(60px); pointer-events: none; z-index: 0;
+        }
+
+        /* ── SCROLL-REVEAL ANIMATIONS ── */
+        .reveal {
+            opacity: 0; transform: translateY(38px);
+            transition: opacity 0.7s cubic-bezier(.4,0,.2,1), transform 0.7s cubic-bezier(.4,0,.2,1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-left {
+            opacity: 0; transform: translateX(-38px);
+            transition: opacity 0.7s cubic-bezier(.4,0,.2,1), transform 0.7s cubic-bezier(.4,0,.2,1);
+        }
+        .reveal-left.visible { opacity: 1; transform: translateX(0); }
+        .reveal-right {
+            opacity: 0; transform: translateX(38px);
+            transition: opacity 0.7s cubic-bezier(.4,0,.2,1), transform 0.7s cubic-bezier(.4,0,.2,1);
+        }
+        .reveal-right.visible { opacity: 1; transform: translateX(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* ── DECORATIVE SECTION NUMBER ── */
+        .section-num {
+            font-size: 9rem; font-family: 'Merriweather', serif; font-weight: 900;
+            color: #4a7c59; opacity: 0.055; line-height: 1;
+            position: absolute; top: -1.5rem; left: -0.5rem;
+            user-select: none; pointer-events: none;
+        }
+
+        /* ── CARD HOVER LIFT ── */
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 22px 44px rgba(44,62,45,0.13);
+        }
+
+        /* ── PULSE GLOW (CTA badge) ── */
+        .glow-badge { animation: pulseGlow 2.5s ease-in-out infinite; }
+        @keyframes pulseGlow {
+            0%,100% { box-shadow: 0 0 0 0 rgba(74,124,89,.25); }
+            50%      { box-shadow: 0 0 0 12px rgba(74,124,89,0); }
+        }
+
+        /* ── STATS COUNTER ── */
+        .counter { font-variant-numeric: tabular-nums; }
+
+        /* ── SCROLL-TO-TOP FAB ── */
+        #scroll-top {
+            position: fixed; bottom: 2rem; right: 2rem;
+            width: 3rem; height: 3rem;
+            background: #4a7c59; color: #fff;
+            border-radius: 50%; border: none;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 1000;
+            opacity: 0; transform: scale(0.7);
+            transition: opacity .3s, transform .3s, background .2s;
+            box-shadow: 0 4px 16px rgba(74,124,89,.45);
+            font-size: 1.25rem; font-weight: bold;
+        }
+        #scroll-top.visible { opacity: 1; transform: scale(1); }
+        #scroll-top:hover { background: #2c3e2d; }
+
+        /* ── SIDE DOT-NAV ── */
+        #section-dots {
+            position: fixed; right: 1.1rem; top: 50%;
+            transform: translateY(-50%); z-index: 100;
+            display: flex; flex-direction: column; gap: 0.55rem;
+        }
+        .dot-nav {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #d1d5db; cursor: pointer;
+            transition: background .3s, transform .3s, height .3s;
+        }
+        .dot-nav.active { background: #4a7c59; transform: scale(1.5); }
+        @media (max-width: 1024px) { #section-dots { display: none; } }
+
+        /* ── HERO BADGE ── */
+        .hero-tag {
+            display: inline-flex; align-items: center; gap: .4rem;
+            background: rgba(74,124,89,.1); border: 1px solid rgba(74,124,89,.22);
+            color: #4a7c59; border-radius: 2rem;
+            padding: .3rem 1.1rem; font-size: .78rem; font-weight: 600;
+            letter-spacing: .06em; text-transform: uppercase; margin-bottom: 1.4rem;
+        }
+
+        /* ── ANIMATED GRADIENT (section 5) ── */
+        @keyframes gradientMove {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-bg {
+            background: linear-gradient(-45deg, #1e3320, #2c3e2d, #3a5c3b, #1a2e1b);
+            background-size: 400% 400%;
+            animation: gradientMove 9s ease infinite;
+        }
+
+        /* ── SUBTLE GRID PATTERN (hero area) ── */
+        .grid-pattern {
+            background-image:
+                linear-gradient(rgba(74,124,89,.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(74,124,89,.04) 1px, transparent 1px);
+            background-size: 36px 36px;
+        }
+
+        /* ── WAVE DIVIDER ── */
+        .wave-divider { overflow: hidden; line-height: 0; }
+        .wave-divider svg { display: block; }
+
+        /* ── STATS MINI-CARDS ── */
+        .stat-card {
+            background: rgba(255,255,255,.7);
+            border: 1px solid rgba(74,124,89,.15);
+            border-radius: 1rem; padding: 1rem 1.4rem;
+            text-align: center; min-width: 100px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* ── TIMELINE STRIPE (hours) ── */
+        .hour-stripe {
+            position: relative; padding-left: 2rem;
+        }
+        .hour-stripe::before {
+            content: ''; position: absolute; left: 0.6rem; top: 0; bottom: 0;
+            width: 2px; background: linear-gradient(to bottom, #4a7c59, #e9c46a, #8b5a2b);
+            border-radius: 2px;
+        }
+        .hour-dot {
+            position: absolute; left: 0; width: 1.3rem; height: 1.3rem;
+            background: #4a7c59; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .6rem; color: #fff; font-weight: bold;
+        }
+
+        /* ── SECTION ACCENT LINE ANIMATION ── */
+        .animated-border {
+            position: relative; overflow: hidden;
+        }
+        .animated-border::after {
+            content: ''; position: absolute; bottom: 0; left: -100%;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, #4a7c59, #e9c46a, transparent);
+            animation: sweepLine 3s ease-in-out infinite;
+        }
+        @keyframes sweepLine {
+            0%   { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* ── SHIMMER on hero H1 underline ── */
+        .shimmer-underline {
+            position: relative; display: inline;
+        }
+        .shimmer-underline::after {
+            content: '';
+            position: absolute; left: 0; bottom: -4px;
+            width: 100%; height: 4px;
+            background: linear-gradient(90deg, #e9c46a, #f5d98a, #e9c46a);
+            background-size: 200%;
+            animation: shimmer 2.5s linear infinite;
+            border-radius: 2px;
+        }
+        @keyframes shimmer {
+            0%   { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* Section separator */
+        .section-sep {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(74,124,89,.2), transparent);
+            margin: 2rem 0;
+        }
     </style>
 </head>
 <body class="bg-agri-light text-agri-dark font-sans leading-relaxed">
 
-    <!-- Navigation -->
+    <!-- ── READING PROGRESS ── -->
+    <div id="progress-bar"></div>
+
+    <!-- ── SIDE DOT NAVIGATION ── -->
+    <nav id="section-dots" aria-label="Navigazione sezioni">
+        <div class="dot-nav active" data-target="intro"         title="Intro"></div>
+        <div class="dot-nav"        data-target="diversity"     title="Biodiversità Digitale"></div>
+        <div class="dot-nav"        data-target="communication" title="On/Offline"></div>
+        <div class="dot-nav"        data-target="netiquette"    title="Netiquette"></div>
+        <div class="dot-nav"        data-target="footprint"     title="Digital Footprint"></div>
+        <div class="dot-nav"        data-target="agri-digital"  title="Agricoltura 4.0"></div>
+        <div class="dot-nav"        data-target="resources"     title="Risorse"></div>
+    </nav>
+
+    <!-- ── SCROLL TO TOP ── -->
+    <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Torna su">↑</button>
+
+    <!-- ── NAVIGATION (originale, invariata) ── -->
     <nav class="fixed top-0 w-full bg-agri-light/95 backdrop-blur shadow-sm z-50 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between h-16">
@@ -67,13 +277,13 @@
                     <span class="font-bold text-xl text-agri-green">IIS MENDEL <span class="text-gray-500 font-normal text-sm ml-2 hidden sm:inline">| Orientamento 3A</span></span>
                 </div>
                 <div class="hidden lg:flex items-center space-x-5 text-sm">
-                    <a href="#intro" class="hover:text-agri-green font-medium transition-colors">Intro</a>
-                    <a href="#diversity" class="hover:text-agri-green font-medium transition-colors">Biodiversità Digitale</a>
+                    <a href="#intro"         class="hover:text-agri-green font-medium transition-colors">Intro</a>
+                    <a href="#diversity"     class="hover:text-agri-green font-medium transition-colors">Biodiversità Digitale</a>
                     <a href="#communication" class="hover:text-agri-green font-medium transition-colors">On/Offline</a>
-                    <a href="#netiquette" class="hover:text-agri-green font-medium transition-colors">Netiquette</a>
-                    <a href="#footprint" class="hover:text-agri-green font-medium transition-colors">Digital Footprint</a>
-                    <a href="#agri-digital" class="hover:text-agri-green font-medium transition-colors">Agricoltura 4.0</a>
-                    <a href="#resources" class="bg-agri-green text-white px-3 py-1 rounded-full hover:bg-agri-dark transition-colors">Risorse</a>
+                    <a href="#netiquette"    class="hover:text-agri-green font-medium transition-colors">Netiquette</a>
+                    <a href="#footprint"     class="hover:text-agri-green font-medium transition-colors">Digital Footprint</a>
+                    <a href="#agri-digital"  class="hover:text-agri-green font-medium transition-colors">Agricoltura 4.0</a>
+                    <a href="#resources"     class="bg-agri-green text-white px-3 py-1 rounded-full hover:bg-agri-dark transition-colors">Risorse</a>
                 </div>
                 <div class="lg:hidden flex items-center">
                     <button id="mobile-menu-btn" class="text-agri-dark focus:outline-none text-2xl">☰</button>
@@ -81,39 +291,93 @@
             </div>
         </div>
         <div id="mobile-menu" class="hidden lg:hidden bg-agri-light border-b border-gray-200 px-4 pt-2 pb-4 space-y-2">
-            <a href="#intro" class="block hover:bg-white p-2 rounded">Introduzione</a>
-            <a href="#diversity" class="block hover:bg-white p-2 rounded">Biodiversità Digitale</a>
+            <a href="#intro"         class="block hover:bg-white p-2 rounded">Introduzione</a>
+            <a href="#diversity"     class="block hover:bg-white p-2 rounded">Biodiversità Digitale</a>
             <a href="#communication" class="block hover:bg-white p-2 rounded">Online/Offline</a>
-            <a href="#netiquette" class="block hover:bg-white p-2 rounded">Netiquette</a>
-            <a href="#footprint" class="block hover:bg-white p-2 rounded">Impronta Digitale</a>
-            <a href="#agri-digital" class="block hover:bg-white p-2 rounded">Agricoltura Digitale</a>
-            <a href="#resources" class="block hover:bg-white p-2 rounded font-bold text-agri-green">Risorse e Video</a>
+            <a href="#netiquette"    class="block hover:bg-white p-2 rounded">Netiquette</a>
+            <a href="#footprint"     class="block hover:bg-white p-2 rounded">Impronta Digitale</a>
+            <a href="#agri-digital"  class="block hover:bg-white p-2 rounded">Agricoltura Digitale</a>
+            <a href="#resources"     class="block hover:bg-white p-2 rounded font-bold text-agri-green">Risorse e Video</a>
         </div>
     </nav>
 
-    <!-- Header / Hero -->
-    <header id="intro" class="pt-28 pb-16 px-4 max-w-4xl mx-auto text-center">
-        <h1 class="text-4xl md:text-5xl font-serif font-bold text-agri-dark mb-6">
-            Paradigmi della Comunicazione Digitale: <br><span class="text-agri-green border-b-4 border-agri-sun">Cittadinanza Attiva per Periti Agrari</span>
-        </h1>
-        <p class="text-lg md:text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
-            La trasformazione digitale ha ridefinito il settore primario. L'acquisizione di competenze comunicative negli ambienti digitali non è solo un obiettivo di educazione civica, ma una <strong>necessità professionale imprescindibile</strong> per i futuri tecnici agrari in un mercato globale disintermediato.
-        </p>
-        <div class="bg-white p-4 rounded-xl shadow-sm inline-block border border-gray-200">
-            <p class="text-sm font-bold text-agri-earth uppercase tracking-widest">Percorso didattico - 3 Ore</p>
-            <ul class="text-left mt-2 text-sm text-gray-600 flex gap-4 divide-x divide-gray-300">
-                <li class="pl-0 pr-4">🕒 1: Psicologia & Diversità</li>
-                <li class="px-4">🕒 2: Netiquette Professionale</li>
-                <li class="pl-4">🕒 3: Web Reputation & Audit</li>
-            </ul>
+    <!-- ══════════════════════════════════════
+         HERO (arricchito con effetti visivi)
+         ══════════════════════════════════════ -->
+    <header id="intro" class="relative pt-28 pb-20 px-4 overflow-hidden grid-pattern">
+        <!-- Blobs di sfondo -->
+        <div class="hero-blob" style="width:550px;height:550px;background:radial-gradient(circle,rgba(74,124,89,.11) 0%,transparent 70%);top:-120px;right:-80px;"></div>
+        <div class="hero-blob" style="width:380px;height:380px;background:radial-gradient(circle,rgba(233,196,106,.13) 0%,transparent 70%);bottom:-60px;left:-40px;"></div>
+
+        <!-- Foglie fluttuanti -->
+        <div class="leaf" style="left:4%;animation-duration:13s;animation-delay:0s;font-size:1.3rem;">🌿</div>
+        <div class="leaf" style="left:12%;animation-duration:17s;animation-delay:2s;font-size:1rem;">🍃</div>
+        <div class="leaf" style="left:26%;animation-duration:11s;animation-delay:5s;font-size:.9rem;">🌱</div>
+        <div class="leaf" style="left:48%;animation-duration:15s;animation-delay:1s;font-size:1rem;">🍃</div>
+        <div class="leaf" style="left:63%;animation-duration:12s;animation-delay:3.5s;font-size:1.2rem;">🌿</div>
+        <div class="leaf" style="left:78%;animation-duration:14s;animation-delay:7s;font-size:.85rem;">🌱</div>
+        <div class="leaf" style="left:91%;animation-duration:10s;animation-delay:4s;font-size:1rem;">🍃</div>
+        <div class="leaf" style="left:35%;animation-duration:16s;animation-delay:9s;font-size:.8rem;">🌿</div>
+
+        <div class="relative z-10 max-w-4xl mx-auto text-center">
+            <!-- Badge pre-titolo (NUOVO) -->
+            <div class="hero-tag reveal">
+                <span>📚</span> Percorso Didattico · Classe 3A Tecnico Agrario
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-serif font-bold text-agri-dark mb-6 reveal reveal-delay-1">
+                Paradigmi della Comunicazione Digitale: <br>
+                <span class="text-agri-green shimmer-underline">Cittadinanza Attiva per Periti Agrari</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-700 mb-10 max-w-3xl mx-auto reveal reveal-delay-2">
+                La trasformazione digitale ha ridefinito il settore primario. L'acquisizione di competenze comunicative negli ambienti digitali non è solo un obiettivo di educazione civica, ma una <strong>necessità professionale imprescindibile</strong> per i futuri tecnici agrari in un mercato globale disintermediato.
+            </p>
+
+            <!-- Contatori statistici (NUOVO) -->
+            <div class="flex flex-wrap gap-4 justify-center mb-10 reveal reveal-delay-2">
+                <div class="stat-card">
+                    <div class="text-3xl font-bold font-serif text-agri-green counter" data-target="68">0</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide mt-1">% agricoltori UE<br>pronti al digitale</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-3xl font-bold font-serif text-agri-earth counter" data-target="83">0</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide mt-1">% utenti richiede<br>emoji inclusive</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-3xl font-bold font-serif text-agri-green counter" data-target="3">0</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide mt-1">ore di percorso<br>didattico</div>
+                </div>
+            </div>
+
+            <!-- Badge percorso (originale, conservato) -->
+            <div class="bg-white p-4 rounded-xl shadow-sm inline-block border border-gray-200 glow-badge reveal reveal-delay-3">
+                <p class="text-sm font-bold text-agri-earth uppercase tracking-widest">Percorso didattico - 3 Ore</p>
+                <ul class="text-left mt-2 text-sm text-gray-600 flex gap-4 divide-x divide-gray-300 flex-wrap">
+                    <li class="pl-0 pr-4">🕒 1: Psicologia &amp; Diversità</li>
+                    <li class="px-4">🕒 2: Netiquette Professionale</li>
+                    <li class="pl-4">🕒 3: Web Reputation &amp; Audit</li>
+                </ul>
+            </div>
         </div>
     </header>
 
+    <!-- Onda di separazione hero → main -->
+    <div class="wave-divider -mt-1">
+        <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="height:48px;width:100%;">
+            <path d="M0,24 C240,48 480,0 720,24 C960,48 1200,0 1440,24 L1440,48 L0,48 Z" fill="#ffffff" opacity="0.5"/>
+            <path d="M0,32 C360,8 1080,48 1440,16 L1440,48 L0,48 Z" fill="#f5f5f0" opacity="0.8"/>
+        </svg>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         MAIN
+         ══════════════════════════════════════ -->
     <main class="max-w-6xl mx-auto px-4 pb-24 space-y-28">
 
-        <!-- Section 1: Generational & Cultural Diversity -->
-        <section id="diversity" class="scroll-mt-24">
-            <div class="mb-10">
+        <!-- ── SEZIONE 1: Biodiversità Digitale ── -->
+        <section id="diversity" class="scroll-mt-24 relative">
+            <span class="section-num" aria-hidden="true">1</span>
+            <div class="mb-10 reveal">
                 <h2 class="text-3xl font-bold text-agri-green mb-4 border-l-4 border-agri-earth pl-4">1. Biodiversità Digitale e Codici Culturali</h2>
                 <p class="text-lg text-gray-700">
                     Proprio come specie diverse comunicano in modi differenti nell'ambiente naturale, le diverse generazioni utilizzano gli strumenti digitali con grammatiche sociali divergenti (il "Tono di Voce Tipografico"). Inoltre, in un mercato agricolo globale, i simboli assumono significati culturali radicalmente diversi.
@@ -121,25 +385,21 @@
             </div>
 
             <div class="grid md:grid-cols-2 gap-10 items-start">
-                <!-- Interactive Emojis -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 card-hover reveal-left">
                     <h3 class="text-xl font-bold mb-4">Il traduttore intergenerazionale e culturale</h3>
                     <p class="text-sm text-gray-500 mb-6">Clicca su un simbolo per vedere come viene decodificato da interlocutori diversi. Fondamentale per non alienare futuri clienti o datori di lavoro.</p>
-                    
                     <div class="flex flex-wrap gap-4 mb-6 justify-center">
                         <button onclick="translateEmoji('👍')" class="text-4xl hover:scale-125 transition-transform focus:outline-none p-2 bg-gray-50 rounded-lg">👍</button>
-                        <button onclick="translateEmoji('.')" class="text-4xl font-serif font-bold hover:scale-125 transition-transform focus:outline-none p-2 bg-gray-50 rounded-lg"> . </button>
+                        <button onclick="translateEmoji('.')"  class="text-4xl font-serif font-bold hover:scale-125 transition-transform focus:outline-none p-2 bg-gray-50 rounded-lg"> . </button>
                         <button onclick="translateEmoji('🙏')" class="text-4xl hover:scale-125 transition-transform focus:outline-none p-2 bg-gray-50 rounded-lg">🙏</button>
                         <button onclick="translateEmoji('🙂')" class="text-4xl hover:scale-125 transition-transform focus:outline-none p-2 bg-gray-50 rounded-lg">🙂</button>
                     </div>
-
                     <div id="emoji-result" class="bg-agri-light p-4 rounded-lg border border-agri-green/30 min-h-[120px] flex items-center justify-center text-center">
                         <p class="text-gray-500 italic">Seleziona un simbolo per scoprirne le insidie comunicative...</p>
                     </div>
                 </div>
 
-                <!-- Testo di approfondimento -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-center">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-center card-hover reveal-right">
                     <h3 class="text-xl font-bold mb-4 text-agri-earth">Attenzione al mercato internazionale!</h3>
                     <ul class="space-y-4 text-gray-700">
                         <li class="flex items-start">
@@ -159,57 +419,56 @@
             </div>
         </section>
 
-        <!-- Section 2: Online vs In-Person -->
-        <section id="communication" class="scroll-mt-24">
-            <div class="mb-10">
+        <!-- ── SEZIONE 2: Architettura della Comunicazione ── -->
+        <section id="communication" class="scroll-mt-24 relative">
+            <span class="section-num" aria-hidden="true">2</span>
+            <div class="mb-10 reveal">
                 <h2 class="text-3xl font-bold text-agri-green mb-4 border-l-4 border-agri-earth pl-4">2. Architettura della Comunicazione: Il Contesto</h2>
                 <p class="text-lg text-gray-700">
                     Se i segnali corporei entrano in contrasto con il contenuto verbale, crediamo al linguaggio del corpo. Ma cosa succede in videochiamata quando subiamo un <strong>"Embodiment Parziale"</strong> (corpo tagliato a mezzo busto)?
                 </p>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden reveal card-hover">
                 <div class="flex border-b border-gray-200">
                     <button onclick="switchContext('offline')" id="btn-offline" class="w-1/2 py-4 text-center font-bold bg-agri-green text-white transition-colors">🗣️ De-visu (Presenza Fisica)</button>
-                    <button onclick="switchContext('online')" id="btn-online" class="w-1/2 py-4 text-center font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors">💻 Mediazione Digitale</button>
+                    <button onclick="switchContext('online')"  id="btn-online"  class="w-1/2 py-4 text-center font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors">💻 Mediazione Digitale</button>
                 </div>
-                
                 <div class="p-8">
                     <!-- OFFLINE -->
                     <div id="content-offline" class="block animate-fade-in">
                         <div class="grid md:grid-cols-3 gap-6 text-center">
-                            <div class="p-4 bg-green-50 rounded-lg">
+                            <div class="p-4 bg-green-50 rounded-lg card-hover">
                                 <div class="text-3xl mb-2">👁️</div>
                                 <h4 class="font-bold mb-2">Contatto Oculare</h4>
                                 <p class="text-sm text-gray-600">Diretto, fondamentale per stabilire fiducia e sintonizzazione durante una trattativa commerciale.</p>
                             </div>
-                            <div class="p-4 bg-green-50 rounded-lg">
+                            <div class="p-4 bg-green-50 rounded-lg card-hover">
                                 <div class="text-3xl mb-2">🧠</div>
                                 <h4 class="font-bold mb-2">Micro-espressioni</h4>
                                 <p class="text-sm text-gray-600">Visibili e decodificabili in tempo reale grazie ai neuroni specchio. Piena percezione cinestesica.</p>
                             </div>
-                            <div class="p-4 bg-green-50 rounded-lg">
+                            <div class="p-4 bg-green-50 rounded-lg card-hover">
                                 <div class="text-3xl mb-2">🤝</div>
                                 <h4 class="font-bold mb-2">Prossemica Attiva</h4>
                                 <p class="text-sm text-gray-600">Gestione reale dello spazio personale. Percezione chiara della distanza relazionale e gerarchica.</p>
                             </div>
                         </div>
                     </div>
-
                     <!-- ONLINE -->
                     <div id="content-online" class="hidden animate-fade-in">
                         <div class="grid md:grid-cols-3 gap-6 text-center">
-                            <div class="p-4 bg-blue-50 rounded-lg">
+                            <div class="p-4 bg-blue-50 rounded-lg card-hover">
                                 <div class="text-3xl mb-2">📸</div>
                                 <h4 class="font-bold mb-2">Assenza di Contatto Oculare</h4>
                                 <p class="text-sm text-gray-600">Mediato dalla webcam. Guardare lo schermo impedisce il contatto visivo reale, creando una sfiducia latente.</p>
                             </div>
-                            <div class="p-4 bg-blue-50 rounded-lg">
+                            <div class="p-4 bg-blue-50 rounded-lg card-hover">
                                 <div class="text-3xl mb-2">🔋</div>
                                 <h4 class="font-bold mb-2">Zoom Fatigue</h4>
                                 <p class="text-sm text-gray-600">Affaticamento cognitivo dovuto allo sforzo di decodificare segnali degradati o asincroni (latenza di rete).</p>
                             </div>
-                            <div class="p-4 bg-blue-50 rounded-lg">
+                            <div class="p-4 bg-blue-50 rounded-lg card-hover">
                                 <div class="text-3xl mb-2">🛡️</div>
                                 <h4 class="font-bold mb-2">Disinibizione</h4>
                                 <p class="text-sm text-gray-600">La mancanza di "indizi di verità" fisici porta a un filtraggio ridotto dei pensieri (commenti impulsivi/flame).</p>
@@ -220,9 +479,10 @@
             </div>
         </section>
 
-        <!-- Section 3: Netiquette -->
-        <section id="netiquette" class="scroll-mt-24">
-            <div class="mb-10">
+        <!-- ── SEZIONE 3: Netiquette ── -->
+        <section id="netiquette" class="scroll-mt-24 relative">
+            <span class="section-num" aria-hidden="true">3</span>
+            <div class="mb-10 reveal">
                 <h2 class="text-3xl font-bold text-agri-green mb-4 border-l-4 border-agri-earth pl-4">3. Netiquette: Codice Etico e Professionale</h2>
                 <p class="text-lg text-gray-700">
                     Non sono norme di legge, ma il "galateo" della rete. Per un perito agrario, l'uso corretto di email, chat aziendali e riunioni online è essenziale per la credibilità.
@@ -230,28 +490,25 @@
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="group perspective bg-white border border-gray-200 p-6 rounded-xl hover:bg-agri-green hover:text-white transition-all duration-300 shadow-sm cursor-pointer h-56 flex flex-col justify-center">
+                <div class="group perspective bg-white border border-gray-200 p-6 rounded-xl hover:bg-agri-green hover:text-white transition-all duration-300 shadow-sm cursor-pointer h-56 flex flex-col justify-center card-hover reveal reveal-delay-1">
                     <div class="text-4xl mb-3 group-hover:hidden block">📧</div>
                     <div class="text-4xl mb-3 hidden group-hover:block">📝</div>
                     <h3 class="font-bold text-lg mb-2">Registro Formale</h3>
                     <p class="text-sm text-gray-500 group-hover:text-green-100">Nelle email professionali/docenti vieta abbreviazioni ("xké", "cmq") ed elenchi senza formattazione.</p>
                 </div>
-
-                <div class="group perspective bg-white border border-gray-200 p-6 rounded-xl hover:bg-agri-earth hover:text-white transition-all duration-300 shadow-sm cursor-pointer h-56 flex flex-col justify-center">
+                <div class="group perspective bg-white border border-gray-200 p-6 rounded-xl hover:bg-agri-earth hover:text-white transition-all duration-300 shadow-sm cursor-pointer h-56 flex flex-col justify-center card-hover reveal reveal-delay-2">
                     <div class="text-4xl mb-3 group-hover:hidden block">🎙️</div>
                     <div class="text-4xl mb-3 hidden group-hover:block">🔇</div>
                     <h3 class="font-bold text-lg mb-2">Gestione Turni</h3>
                     <p class="text-sm text-gray-500 group-hover:text-orange-100">In riunione/videolezione attendere il proprio turno e silenziare il microfono per evitare rumori di fondo.</p>
                 </div>
-
-                <div class="group perspective bg-white border border-gray-200 p-6 rounded-xl hover:bg-agri-sun hover:text-white transition-all duration-300 shadow-sm cursor-pointer h-56 flex flex-col justify-center">
+                <div class="group perspective bg-white border border-gray-200 p-6 rounded-xl hover:bg-agri-sun hover:text-white transition-all duration-300 shadow-sm cursor-pointer h-56 flex flex-col justify-center card-hover reveal reveal-delay-3">
                     <div class="text-4xl mb-3 group-hover:hidden block">📎</div>
                     <div class="text-4xl mb-3 hidden group-hover:block">📁</div>
                     <h3 class="font-bold text-lg mb-2">Gestione Allegati</h3>
                     <p class="text-sm text-gray-500 group-hover:text-yellow-900">Usa nomi file significativi. Non inviare file pesanti o documenti aziendali privati in chat pubbliche.</p>
                 </div>
-
-                <div class="group perspective bg-white border border-gray-200 p-6 rounded-xl hover:bg-red-600 hover:text-white transition-all duration-300 shadow-sm cursor-pointer h-56 flex flex-col justify-center">
+                <div class="group perspective bg-white border border-gray-200 p-6 rounded-xl hover:bg-red-600 hover:text-white transition-all duration-300 shadow-sm cursor-pointer h-56 flex flex-col justify-center card-hover reveal reveal-delay-3">
                     <div class="text-4xl mb-3 group-hover:hidden block">📰</div>
                     <div class="text-4xl mb-3 hidden group-hover:block">🛑</div>
                     <h3 class="font-bold text-lg mb-2">No Fake News</h3>
@@ -260,9 +517,10 @@
             </div>
         </section>
 
-        <!-- Section 4: Digital Footprint -->
-        <section id="footprint" class="scroll-mt-24">
-            <div class="mb-10">
+        <!-- ── SEZIONE 4: Digital Footprint ── -->
+        <section id="footprint" class="scroll-mt-24 relative">
+            <span class="section-num" aria-hidden="true">4</span>
+            <div class="mb-10 reveal">
                 <h2 class="text-3xl font-bold text-agri-green mb-4 border-l-4 border-agri-earth pl-4">4. Digital Footprint e Audit Reputazionale</h2>
                 <p class="text-lg text-gray-700">
                     L'impronta digitale si divide in <strong>Attiva</strong> (post, email), <strong>Passiva</strong> (cookie, IP, geolocalizzazione) e <strong>di Terze Parti</strong> (tag di amici). I recruiter valutano i social per assumere.
@@ -271,47 +529,45 @@
 
             <div class="grid md:grid-cols-12 gap-8">
                 <!-- Calculator -->
-                <div class="md:col-span-7 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="md:col-span-7 bg-white p-6 rounded-xl shadow-sm border border-gray-100 card-hover reveal-left">
                     <h3 class="text-xl font-bold mb-4">Ego-Surfing e Audit Checklist</h3>
                     <p class="text-sm text-gray-500 mb-6">Spunta le pratiche di "pulizia" del tuo profilo che hai già completato o fai abitualmente.</p>
-                    
                     <div class="space-y-3 mb-8">
-                        <label class="flex items-center space-x-3 p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
+                        <label class="flex items-center space-x-3 p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer transition-colors">
                             <input type="checkbox" class="footprint-check w-5 h-5 text-agri-green focus:ring-agri-green" value="20">
                             <span>Ho cercato il mio Nome/Cognome su Google (Ego-Surfing)</span>
                         </label>
-                        <label class="flex items-center space-x-3 p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
+                        <label class="flex items-center space-x-3 p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer transition-colors">
                             <input type="checkbox" class="footprint-check w-5 h-5 text-agri-green focus:ring-agri-green" value="20">
                             <span>Ho chiuso account obsoleti su vecchi forum o app</span>
                         </label>
-                        <label class="flex items-center space-x-3 p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
+                        <label class="flex items-center space-x-3 p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer transition-colors">
                             <input type="checkbox" class="footprint-check w-5 h-5 text-agri-green focus:ring-agri-green" value="20">
                             <span>Ho attivato l'Autenticazione a due fattori (MFA)</span>
                         </label>
-                        <label class="flex items-center space-x-3 p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
+                        <label class="flex items-center space-x-3 p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer transition-colors">
                             <input type="checkbox" class="footprint-check w-5 h-5 text-agri-green focus:ring-agri-green" value="20">
                             <span>Ho controllato le impostazioni Privacy sui Social (chi mi può taggare)</span>
                         </label>
-                        <label class="flex items-center space-x-3 p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer">
+                        <label class="flex items-center space-x-3 p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer transition-colors">
                             <input type="checkbox" class="footprint-check w-5 h-5 text-agri-green focus:ring-agri-green" value="20">
                             <span>Uso liste/profili separati per vita privata e vita professionale</span>
                         </label>
                     </div>
-
                     <div class="mt-4">
                         <div class="flex justify-between text-sm font-bold text-gray-700 mb-1">
                             <span>Livello di Sicurezza Reputazionale:</span>
-                            <span id="footprint-score">0%</span>
+                            <span id="footprint-score">0/100</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-                            <div id="footprint-bar" class="bg-red-500 h-4 transition-all duration-500" style="width: 0%"></div>
+                            <div id="footprint-bar" class="bg-red-500 h-4 transition-all duration-500 rounded-full" style="width:0%"></div>
                         </div>
                         <p id="footprint-message" class="text-sm text-gray-500 mt-2 italic">Profilo a rischio. Inizia l'Audit.</p>
                     </div>
                 </div>
 
-                <!-- Chart: What they know -->
-                <div class="md:col-span-5 bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+                <!-- Chart -->
+                <div class="md:col-span-5 bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col card-hover reveal-right">
                     <h3 class="text-xl font-bold mb-2">Composizione dei Dati Venduti</h3>
                     <p class="text-sm text-gray-500 mb-4">L'impronta invisibile raccolta dagli algoritmi.</p>
                     <div class="chart-container flex-grow flex items-center justify-center">
@@ -321,30 +577,31 @@
             </div>
         </section>
 
-        <!-- Section 5: Agricoltura 4.0 (NEW) -->
+        <!-- ── SEZIONE 5: Agricoltura 4.0 (sfondo animato) ── -->
         <section id="agri-digital" class="scroll-mt-24">
-            <div class="bg-agri-dark text-white rounded-2xl p-8 md:p-12 shadow-lg relative overflow-hidden">
-                <div class="absolute top-0 right-0 opacity-10 text-9xl">🚜</div>
+            <div class="animated-bg text-white rounded-2xl p-8 md:p-12 shadow-lg relative overflow-hidden reveal">
+                <div class="absolute top-0 right-0 opacity-10 text-9xl select-none">🚜</div>
+                <!-- Glow extra -->
+                <div style="position:absolute;top:-60px;left:-60px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(233,196,106,.12) 0%,transparent 70%);pointer-events:none;"></div>
                 <div class="relative z-10">
                     <h2 class="text-3xl font-bold text-agri-sun mb-4">5. Innovazione Digitale nel Settore Agrario</h2>
                     <p class="text-lg text-gray-300 mb-8 max-w-3xl">
                         Il 68% degli agricoltori europei ritiene le tecnologie digitali vitali. L'agricoltura moderna richiede tecnici capaci di gestire dati, CRM e marketing online per disintermediare la filiera.
                     </p>
-                    
                     <div class="grid md:grid-cols-3 gap-6">
-                        <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/20">
+                        <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/20 card-hover">
                             <div class="text-3xl mb-3">📱</div>
                             <h4 class="font-bold text-agri-sun mb-2">Gli Agri-Influencer</h4>
                             <p class="text-sm text-gray-200">Realtà come <em>"Mat the Farmer"</em> usano YouTube e TikTok per creare fiducia mostrando la gestione reale dell'azienda, trasformando il lavoro in divulgazione e marketing.</p>
                         </div>
-                        <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/20">
+                        <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/20 card-hover">
                             <div class="text-3xl mb-3">💰</div>
                             <h4 class="font-bold text-agri-sun mb-2">Crowdfunding Agricolo</h4>
                             <p class="text-sm text-gray-200">Il caso <em>Mulinum</em>: come raccogliere 500.000€ in 90 giorni tramite Facebook per recuperare grani antichi, sostituendo i prestiti bancari con la community.</p>
                         </div>
-                        <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/20">
+                        <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/20 card-hover">
                             <div class="text-3xl mb-3">📊</div>
-                            <h4 class="font-bold text-agri-sun mb-2">CRM & Analytics</h4>
+                            <h4 class="font-bold text-agri-sun mb-2">CRM &amp; Analytics</h4>
                             <p class="text-sm text-gray-200">WhatsApp Business e analisi dei dati di conversione sono ormai competenze fondamentali per ottimizzare la resa economica dell'impresa agricola.</p>
                         </div>
                     </div>
@@ -352,36 +609,36 @@
             </div>
         </section>
 
-        <!-- Section 6: Video & Bibliografia TABS (NEW) -->
+        <!-- ── SEZIONE 6: Risorse & Video (TABS) ── -->
         <section id="resources" class="scroll-mt-24">
-            <div class="mb-8 text-center">
+            <div class="mb-8 text-center reveal">
                 <h2 class="text-3xl font-bold text-agri-dark">Materiale per l'Approfondimento</h2>
                 <p class="text-gray-600 mt-2">Risorse video e bibliografia per il corso.</p>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden reveal">
                 <!-- Tab Headers -->
                 <div class="flex border-b border-gray-200 bg-gray-50">
                     <button class="tab-btn active flex-1 py-4 text-center font-medium text-gray-500 hover:text-agri-dark transition-colors" onclick="openTab(event, 'tab-video-en')">🇬🇧 Video (CLIL)</button>
-                    <button class="tab-btn flex-1 py-4 text-center font-medium text-gray-500 hover:text-agri-dark transition-colors" onclick="openTab(event, 'tab-video-it')">🇮🇹 Video (ITA)</button>
-                    <button class="tab-btn flex-1 py-4 text-center font-medium text-gray-500 hover:text-agri-dark transition-colors" onclick="openTab(event, 'tab-biblio')">📚 Bibliografia</button>
+                    <button class="tab-btn        flex-1 py-4 text-center font-medium text-gray-500 hover:text-agri-dark transition-colors" onclick="openTab(event, 'tab-video-it')">🇮🇹 Video (ITA)</button>
+                    <button class="tab-btn        flex-1 py-4 text-center font-medium text-gray-500 hover:text-agri-dark transition-colors" onclick="openTab(event, 'tab-biblio')">📚 Bibliografia</button>
                 </div>
 
-                <!-- Tab Content: Video EN (CLIL) -->
+                <!-- Tab: Video EN -->
                 <div id="tab-video-en" class="tab-content active p-6 md:p-8">
                     <h3 class="text-xl font-bold text-agri-green mb-6 border-b border-gray-100 pb-2">English Resources (CLIL)</h3>
                     <div class="grid md:grid-cols-3 gap-6">
-                        <a href="https://www.youtube.com/results?search_query=Intergenerational+communication+TALKaCtive+Explainers" target="_blank" class="block group bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-agri-green hover:shadow-md transition-all">
+                        <a href="https://www.youtube.com/results?search_query=Intergenerational+communication+TALKaCtive+Explainers" target="_blank" class="block group bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-agri-green hover:shadow-md transition-all card-hover">
                             <div class="text-4xl mb-3">👴👧</div>
                             <h4 class="font-bold text-agri-dark group-hover:text-agri-green mb-2">Intergenerational Communication</h4>
                             <p class="text-sm text-gray-600">How generational "codes" create barriers or bridges.</p>
                         </a>
-                        <a href="https://www.youtube.com/results?search_query=What+Is+a+Digital+Footprint+Common+Sense" target="_blank" class="block group bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-agri-green hover:shadow-md transition-all">
+                        <a href="https://www.youtube.com/results?search_query=What+Is+a+Digital+Footprint+Common+Sense" target="_blank" class="block group bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-agri-green hover:shadow-md transition-all card-hover">
                             <div class="text-4xl mb-3">👣</div>
                             <h4 class="font-bold text-agri-dark group-hover:text-agri-green mb-2">What Is a Digital Footprint?</h4>
                             <p class="text-sm text-gray-600">Common Sense Education explainer on permanent online trails.</p>
                         </a>
-                        <a href="https://www.youtube.com/results?search_query=Generations+Episode+1+Bridging+the+Digital+Divide" target="_blank" class="block group bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-agri-green hover:shadow-md transition-all">
+                        <a href="https://www.youtube.com/results?search_query=Generations+Episode+1+Bridging+the+Digital+Divide" target="_blank" class="block group bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-agri-green hover:shadow-md transition-all card-hover">
                             <div class="text-4xl mb-3">🌉</div>
                             <h4 class="font-bold text-agri-dark group-hover:text-agri-green mb-2">Bridging the Digital Divide</h4>
                             <p class="text-sm text-gray-600">Interviews with teens about digital challenges.</p>
@@ -389,27 +646,26 @@
                     </div>
                 </div>
 
-                <!-- Tab Content: Video IT -->
+                <!-- Tab: Video IT -->
                 <div id="tab-video-it" class="tab-content p-6 md:p-8">
                     <h3 class="text-xl font-bold text-agri-green mb-6 border-b border-gray-100 pb-2">Risorse in Italiano</h3>
                     <div class="grid md:grid-cols-3 gap-6">
-                        <a href="https://www.youtube.com/results?search_query=Netiquette+Il+galateo+di+Internet" target="_blank" class="block group bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-agri-green hover:shadow-md transition-all">
+                        <a href="https://www.youtube.com/results?search_query=Netiquette+Il+galateo+di+Internet" target="_blank" class="block group bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-agri-green hover:shadow-md transition-all card-hover">
                             <div class="text-4xl mb-3">⚖️</div>
                             <h4 class="font-bold text-agri-dark group-hover:text-agri-green mb-2">Netiquette: Galateo di Internet</h4>
                             <p class="text-sm text-gray-600">Videopillola chiara su regole, fonti e rispetto.</p>
                         </a>
-                        <a href="https://www.youtube.com/results?search_query=Costruiamo+la+nostra+identita+digitale" target="_blank" class="block group bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-agri-green hover:shadow-md transition-all">
+                        <a href="https://www.youtube.com/results?search_query=Costruiamo+la+nostra+identita+digitale" target="_blank" class="block group bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-agri-green hover:shadow-md transition-all card-hover">
                             <div class="text-4xl mb-3">🆔</div>
                             <h4 class="font-bold text-agri-dark group-hover:text-agri-green mb-2">Identità e Impronta Digitale</h4>
                             <p class="text-sm text-gray-600">Come si costruisce la nostra "carta d'identità" online.</p>
                         </a>
-                        <a href="https://www.youtube.com/results?search_query=Comunicazione+digitale+Daniele+Aristarco" target="_blank" class="block group bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-agri-green hover:shadow-md transition-all">
+                        <a href="https://www.youtube.com/results?search_query=Comunicazione+digitale+Daniele+Aristarco" target="_blank" class="block group bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-agri-green hover:shadow-md transition-all card-hover">
                             <div class="text-4xl mb-3">💬</div>
                             <h4 class="font-bold text-agri-dark group-hover:text-agri-green mb-2">Comunicazione Digitale (Aristarco)</h4>
                             <p class="text-sm text-gray-600">Approfondimento su linguaggio e percezione degli altri.</p>
                         </a>
                     </div>
-                    
                     <h4 class="font-bold text-agri-earth mt-8 mb-4">Focus Settore Agrario</h4>
                     <ul class="space-y-2 text-sm text-agri-blue">
                         <li><a href="https://www.youtube.com/watch?v=dNRQpEbmQ8c" target="_blank" class="hover:underline">📺 Matt The Farmer: da Contadino a Youtuber Imprenditore</a></li>
@@ -418,7 +674,7 @@
                     </ul>
                 </div>
 
-                <!-- Tab Content: Bibliografia -->
+                <!-- Tab: Bibliografia -->
                 <div id="tab-biblio" class="tab-content p-6 md:p-8">
                     <h3 class="text-xl font-bold text-agri-green mb-6 border-b border-gray-100 pb-2">Bibliografia e Fonti</h3>
                     <div class="h-64 overflow-y-auto pr-4 text-sm text-gray-600 space-y-3">
@@ -441,42 +697,40 @@
 
     </main>
 
-    <footer class="bg-agri-dark text-white py-10 text-center border-t-4 border-agri-green">
-        <p class="font-bold text-lg">IIS MENDEL - Villa Cortese (MI)</p>
+    <!-- ── FOOTER ── -->
+    <footer class="bg-agri-dark text-white py-12 text-center border-t-4 border-agri-green relative overflow-hidden">
+        <!-- Decorative tractor watermark -->
+        <div class="absolute right-8 bottom-4 text-8xl opacity-5 select-none" aria-hidden="true">🚜</div>
+        <div class="absolute left-8 top-4 text-6xl opacity-5 select-none" aria-hidden="true">🌿</div>
+        <p class="font-bold text-lg font-serif">IIS MENDEL - Villa Cortese (MI)</p>
         <p class="text-sm text-gray-300 mt-2">Materiale didattico interattivo per l'orientamento | Classe 3A</p>
         <p class="text-sm text-gray-400 mt-1">A cura del Prof. Crespi (Inglese / Educazione Civica / Orientamento)</p>
+        <div class="mt-6 flex justify-center gap-3 text-xl opacity-60">
+            <span>🌾</span><span>💻</span><span>🌍</span><span>📱</span><span>🌱</span>
+        </div>
     </footer>
 
-    <!-- JavaScript Logic -->
+    <!-- ══════════════════════════════════════
+         JAVASCRIPT
+         ══════════════════════════════════════ -->
     <script>
-        // --- Navigation Mobile Menu ---
+        // ── Mobile menu ──
         document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+            document.getElementById('mobile-menu').classList.toggle('hidden');
         });
-
         document.querySelectorAll('#mobile-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                document.getElementById('mobile-menu').classList.add('hidden');
-            });
+            link.addEventListener('click', () => document.getElementById('mobile-menu').classList.add('hidden'));
         });
 
-        // --- Tab Logic ---
+        // ── Tabs ──
         function openTab(evt, tabName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].className = tabcontent[i].className.replace(" active", "");
-            }
-            tablinks = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-            document.getElementById(tabName).className += " active";
-            evt.currentTarget.className += " active";
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
         }
 
-        // --- Interaction 1: Emoji Translator ---
+        // ── Emoji Translator ──
         const emojiData = {
             '👍': {
                 genZ: "Spesso sarcastico, 'Vabbè', o fine brusca (Occidente). Offensivo simile al dito medio in Medio Oriente/Africa.",
@@ -495,11 +749,9 @@
                 boomer: "Preghiera, o battere il cinque."
             }
         };
-
         function translateEmoji(emoji) {
             const resultDiv = document.getElementById('emoji-result');
             const data = emojiData[emoji];
-            
             resultDiv.innerHTML = `
                 <div class="w-full text-left animate-fade-in">
                     <div class="text-center text-4xl mb-2 font-serif">${emoji}</div>
@@ -513,101 +765,147 @@
                             <span class="text-sm font-medium text-agri-dark">${data.boomer}</span>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
 
-        // --- Interaction 2: Online vs Offline Toggle ---
+        // ── Online / Offline toggle ──
         function switchContext(context) {
             const btnOff = document.getElementById('btn-offline');
-            const btnOn = document.getElementById('btn-online');
-            const contentOff = document.getElementById('content-offline');
-            const contentOn = document.getElementById('content-online');
-
+            const btnOn  = document.getElementById('btn-online');
+            const cOff   = document.getElementById('content-offline');
+            const cOn    = document.getElementById('content-online');
             if (context === 'offline') {
                 btnOff.className = "w-1/2 py-4 text-center font-bold bg-agri-green text-white transition-colors";
-                btnOn.className = "w-1/2 py-4 text-center font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors";
-                contentOff.classList.remove('hidden');
-                contentOn.classList.add('hidden');
+                btnOn.className  = "w-1/2 py-4 text-center font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors";
+                cOff.classList.remove('hidden'); cOn.classList.add('hidden');
             } else {
-                btnOn.className = "w-1/2 py-4 text-center font-bold bg-blue-600 text-white transition-colors";
+                btnOn.className  = "w-1/2 py-4 text-center font-bold bg-blue-600 text-white transition-colors";
                 btnOff.className = "w-1/2 py-4 text-center font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors";
-                contentOn.classList.remove('hidden');
-                contentOff.classList.add('hidden');
+                cOn.classList.remove('hidden'); cOff.classList.add('hidden');
             }
         }
 
-        // --- Interaction 3: Footprint Audit Calculator ---
+        // ── Footprint Calculator ──
         const checkboxes = document.querySelectorAll('.footprint-check');
         const progressBar = document.getElementById('footprint-bar');
-        const scoreText = document.getElementById('footprint-score');
+        const scoreText   = document.getElementById('footprint-score');
         const messageText = document.getElementById('footprint-message');
-
-        checkboxes.forEach(box => {
-            box.addEventListener('change', calculateFootprint);
-        });
-
+        checkboxes.forEach(box => box.addEventListener('change', calculateFootprint));
         function calculateFootprint() {
             let total = 0;
-            checkboxes.forEach(box => {
-                if (box.checked) total += parseInt(box.value);
-            });
-
+            checkboxes.forEach(box => { if (box.checked) total += parseInt(box.value); });
             progressBar.style.width = total + '%';
             scoreText.innerText = total + '/100';
-
             if (total === 0) {
-                progressBar.className = "h-4 transition-all duration-500 bg-red-500";
+                progressBar.className = "h-4 transition-all duration-500 bg-red-500 rounded-full";
                 messageText.innerText = "Profilo altamente esposto. Inizia a gestire la tua ombra digitale.";
             } else if (total < 50) {
-                progressBar.className = "h-4 transition-all duration-500 bg-yellow-500";
+                progressBar.className = "h-4 transition-all duration-500 bg-yellow-500 rounded-full";
                 messageText.innerText = "Audit iniziato, ma ci sono ancora ampi margini di sicurezza da coprire.";
             } else if (total < 100) {
-                progressBar.className = "h-4 transition-all duration-500 bg-agri-green";
+                progressBar.className = "h-4 transition-all duration-500 bg-agri-green rounded-full";
                 messageText.innerText = "Buona gestione della Web Reputation. Quasi pronto per i recruiter.";
             } else {
-                progressBar.className = "h-4 transition-all duration-500 bg-blue-500";
+                progressBar.className = "h-4 transition-all duration-500 bg-blue-500 rounded-full";
                 messageText.innerText = "Eccellente! Hai una Digital Footprint professionale e controllata.";
             }
         }
 
-        // --- Charts Implementation (Chart.js) ---
+        // ── Chart.js ──
         document.addEventListener("DOMContentLoaded", function() {
-            
-            // Chart 1: Digital Footprint Data Types (Doughnut)
             const ctxData = document.getElementById('dataChart').getContext('2d');
             new Chart(ctxData, {
                 type: 'doughnut',
                 data: {
-                    labels: [
-                        'Traccia Passiva (Cookie/IP)',
-                        'Traccia Attiva (Post/Email)',
-                        'Dati Terze Parti (Tag)',
-                        'Geolocalizzazione',
-                        'Ricerche'
-                    ],
+                    labels: ['Traccia Passiva (Cookie/IP)', 'Traccia Attiva (Post/Email)', 'Dati Terze Parti (Tag)', 'Geolocalizzazione', 'Ricerche'],
                     datasets: [{
                         data: [35, 25, 15, 15, 10],
-                        backgroundColor: [
-                            '#8b5a2b', // Earth (Passive)
-                            '#4a7c59', // Green (Active)
-                            '#e9c46a', // Sun (Third party)
-                            '#a67c52', 
-                            '#6a9c79'  
-                        ],
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
+                        backgroundColor: ['#8b5a2b','#4a7c59','#e9c46a','#a67c52','#6a9c79'],
+                        borderWidth: 2, borderColor: '#ffffff'
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '60%',
-                    plugins: {
-                        legend: { position: 'bottom' }
+                    responsive: true, maintainAspectRatio: false, cutout: '60%',
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        });
+
+        // ════════════════════════════════
+        // NUOVI COMPORTAMENTI DINAMICI
+        // ════════════════════════════════
+
+        // ── 1. Reading Progress Bar ──
+        window.addEventListener('scroll', () => {
+            const scrollTop  = document.documentElement.scrollTop;
+            const docHeight  = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const pct        = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            document.getElementById('progress-bar').style.width = pct + '%';
+
+            // Scroll-to-top visibility
+            const fab = document.getElementById('scroll-top');
+            if (scrollTop > 400) fab.classList.add('visible');
+            else                 fab.classList.remove('visible');
+        });
+
+        // ── 2. Scroll Reveal (IntersectionObserver) ──
+        const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        revealEls.forEach(el => revealObserver.observe(el));
+
+        // ── 3. Animated Counters ──
+        function animateCounter(el, target, duration = 1600) {
+            let start = 0;
+            const step = timestamp => {
+                if (!start) start = timestamp;
+                const progress = Math.min((timestamp - start) / duration, 1);
+                el.textContent = Math.floor(progress * target) + (target < 10 ? '' : '%');
+                if (progress < 1) requestAnimationFrame(step);
+                else el.textContent = target + (target < 10 ? '' : '%');
+            };
+            requestAnimationFrame(step);
+        }
+        const counterEls = document.querySelectorAll('.counter[data-target]');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target, parseInt(entry.target.dataset.target));
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        counterEls.forEach(el => counterObserver.observe(el));
+
+        // ── 4. Side Dot Navigation ──
+        const sectionIds = ['intro','diversity','communication','netiquette','footprint','agri-digital','resources'];
+        const dots = document.querySelectorAll('.dot-nav');
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const target = document.getElementById(dot.dataset.target);
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const idx = sectionIds.indexOf(entry.target.id);
+                    if (idx > -1) {
+                        dots.forEach(d => d.classList.remove('active'));
+                        if (dots[idx]) dots[idx].classList.add('active');
                     }
                 }
             });
+        }, { threshold: 0.35 });
+        sectionIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) sectionObserver.observe(el);
         });
     </script>
 </body>
